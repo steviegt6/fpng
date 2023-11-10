@@ -370,12 +370,12 @@ namespace fpng
 
 	cpu_info g_cpu_info;
 		
-	void fpng_init()
+	EXPORT void fpng_init()
 	{
 		g_cpu_info.init();
 	}
 #else
-	void fpng_init()
+	EXPORT void fpng_init()
 	{
 	}
 #endif
@@ -1799,6 +1799,27 @@ do_literals:
 		for (i = 0; i < 4; ++i, c <<= 8)
 			(out_buf.data() + out_buf.size() - 16)[i] = (uint8_t)(c >> 24);
 				
+		return true;
+	}
+
+	EXPORT bool fpng_encode_image_to_memory_wrapper(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, 
+		uint32_t flags, BufListHandle* hImage, uint8_t** imageData, uint32_t* imageLength)
+	{
+		auto out_buf = new std::vector<uint8_t>();
+		bool result = fpng_encode_image_to_memory(pImage, w, h, num_chans, *out_buf, flags);
+
+		*hImage = reinterpret_cast<BufListHandle>(out_buf);
+		*imageData = out_buf->data();
+		*imageLength = out_buf->size();
+
+		return result;
+	}
+
+	EXPORT bool fpng_release_image(BufListHandle hImage)
+	{
+		auto items = reinterpret_cast<std::vector<uint8_t>*>(hImage);
+		delete items;
+
 		return true;
 	}
 
