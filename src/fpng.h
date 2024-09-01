@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <vector>
+#include "libdeflate.h"
 
 #ifndef FPNG_TRAIN_HUFFMAN_TABLES
 	// Set to 1 when using the -t (training) option in fpng_test to generate new opaque/alpha Huffman tables for the single pass encoder.
