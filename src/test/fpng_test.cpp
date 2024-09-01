@@ -570,7 +570,7 @@ static bool fuzz_test_encoder(
 			uint32_t decoded_width, decoded_height;
 
 			uint32_t desired_chans = 4;// source_chans;
-			int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer, decoded_width, decoded_height, channels_in_file, desired_chans);
+			int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer, decoded_width, decoded_height, channels_in_file, desired_chans, false);
 			if (res != 0)
 			{
 				fprintf(stderr, "fpng::fpng_decode() failed with error %i!\n", res);
@@ -658,7 +658,7 @@ static int fuzz_test_encoder2(uint32_t fpng_flags)
 
 		std::vector<uint8_t> decomp_buf;
 		uint32_t dec_width, dec_height, dec_chans;
-		int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), decomp_buf, dec_width, dec_height, dec_chans, num_chans);
+		int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), decomp_buf, dec_width, dec_height, dec_chans, num_chans, false);
 		if (res != fpng::FPNG_DECODE_SUCCESS)
 		{
 			fprintf(stderr, "fpng::fpng_decode_memory() failed!\n");
@@ -1095,7 +1095,7 @@ int main(int arg_c, char **arg_v)
 		uint32_t channels_in_file;
 		uint32_t decoded_width, decoded_height;
 
-		int res = fpng::fpng_decode_memory(source_file_data.data(), (uint32_t)source_file_data.size(), fpngd_decode_buffer, decoded_width, decoded_height, channels_in_file, 3);
+		int res = fpng::fpng_decode_memory(source_file_data.data(), (uint32_t)source_file_data.size(), fpngd_decode_buffer, decoded_width, decoded_height, channels_in_file, 3, false);
 		if (res != 0)
 		{
 			fprintf(stderr, "fpng::fpng_decode() failed with error %i!\n", res);
@@ -1247,7 +1247,7 @@ int main(int arg_c, char **arg_v)
 			fpngd_decode_buffer.clear();
 						
 			tm.start();
-			res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer, decoded_width, decoded_height, channels_in_file, 4);
+			res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer, decoded_width, decoded_height, channels_in_file, 4, false);
 			if (res != 0)
 				break;
 			fpng_decode_time = minimum(tm.get_elapsed_secs(), fpng_decode_time);
@@ -1279,7 +1279,7 @@ int main(int arg_c, char **arg_v)
 		uint32_t channels_in_file2;
 		uint32_t decoded_width2, decoded_height2;
 
-		int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer2, decoded_width2, decoded_height2, channels_in_file2, 3);
+		int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer2, decoded_width2, decoded_height2, channels_in_file2, 3, false);
 		if (res != 0)
 		{
 			fprintf(stderr, "fpng::fpng_decode() failed with error %i!\n", res);
@@ -1306,7 +1306,7 @@ int main(int arg_c, char **arg_v)
 		uint32_t channels_in_file2;
 		uint32_t decoded_width2, decoded_height2;
 
-		int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer2, decoded_width2, decoded_height2, channels_in_file2, 4);
+		int res = fpng::fpng_decode_memory(fpng_file_buf.data(), (uint32_t)fpng_file_buf.size(), fpngd_decode_buffer2, decoded_width2, decoded_height2, channels_in_file2, 4, false);
 		if (res != 0)
 		{
 			fprintf(stderr, "fpng::fpng_decode() failed with error %i!\n", res);

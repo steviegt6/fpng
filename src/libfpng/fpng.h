@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <vector>
+#include "libdeflate.h"
 
 #ifndef FPNG_TRAIN_HUFFMAN_TABLES
 	// Set to 1 when using the -t (training) option in fpng_test to generate new opaque/alpha Huffman tables for the single pass encoder.
@@ -14,6 +15,9 @@
 
 namespace fpng
 {
+	const uint32_t FPNG_CRC32_INIT = 0;
+	const uint32_t FPNG_ADLER32_INIT = 1;
+
 	// ---- Library initialization - call once to identify if the processor supports SSE.
 	// Otherwise you'll only get scalar fallbacks.
 	EXPORT void fpng_init();
@@ -22,15 +26,17 @@ namespace fpng
 
 	// Returns true if the CPU supports SSE 4.1, and SSE support wasn't disabled by setting FPNG_NO_SSE=1.
 	// fpng_init() must have been called first, or it'll assert and return false.
-	bool fpng_cpu_supports_sse41();
+	EXPORT bool fpng_cpu_supports_sse41();
 
-	// Fast CRC-32 SSE4.1+pclmul or a scalar fallback (slice by 4)
-	const uint32_t FPNG_CRC32_INIT = 0;
-	uint32_t fpng_crc32(const void* pData, size_t size, uint32_t prev_crc32 = FPNG_CRC32_INIT);
+	inline uint32_t fpng_crc32(const void* pBuf, size_t len, uint32_t crc = FPNG_CRC32_INIT)
+	{
+		return libdeflate_crc32(crc, (const uint8_t*)pBuf, len);
+	}
 
-	// Fast Adler32 SSE4.1 Adler-32 with a scalar fallback.
-	const uint32_t FPNG_ADLER32_INIT = 1;
-	uint32_t fpng_adler32(const void* pData, size_t size, uint32_t adler = FPNG_ADLER32_INIT);
+	inline uint32_t fpng_adler32(const void* pBuf, size_t len, uint32_t adler = FPNG_ADLER32_INIT)
+	{
+		return libdeflate_adler32(adler, (const uint8_t*)pBuf, len);
+	}
 
 	// ---- Compression
 	enum
@@ -47,7 +53,7 @@ namespace fpng
 	// pImage: pointer to RGB or RGBA image pixels, R first in memory, B/A last.
 	// w/h - image dimensions. Image's row pitch in bytes must is w*num_chans.
 	// num_chans must be 3 or 4. 
-	bool fpng_encode_image_to_memory(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, std::vector<uint8_t>& out_buf, uint32_t flags = 0);
+	EXPORT bool fpng_encode_image_to_memory(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, std::vector<uint8_t>& out_buf, uint32_t flags = 0);
 
 	typedef intptr_t BufListHandle;
 
@@ -115,7 +121,7 @@ namespace fpng
 	// Returns FPNG_DECODE_SUCCESS on success, otherwise one of the failure codes above.
 	// If FPNG_DECODE_NOT_FPNG is returned, you must decompress the file with a general purpose PNG decoder.
 	// If another error occurs, the file is likely corrupted or invalid, but you can still try to decompress the file with another decoder (which will likely fail).
-	int fpng_decode_memory(const void* pImage, uint32_t image_size, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
+	EXPORT int fpng_decode_memory(const void* pImage, uint32_t image_size, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
 
 #ifndef FPNG_NO_STDIO
 	int fpng_decode_file(const char* pFilename, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
