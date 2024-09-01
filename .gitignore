@@ -3,7 +3,7 @@
 .idea/
 
 bin/
-obh/
-fpng/
+obj/
+build/
 
 *.user
