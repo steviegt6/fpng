@@ -15,6 +15,9 @@
 
 namespace fpng
 {
+	const uint32_t FPNG_CRC32_INIT = 0;
+	const uint32_t FPNG_ADLER32_INIT = 1;
+
 	// ---- Library initialization - call once to identify if the processor supports SSE.
 	// Otherwise you'll only get scalar fallbacks.
 	EXPORT void fpng_init();
