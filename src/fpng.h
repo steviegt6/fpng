@@ -92,11 +92,12 @@ namespace fpng
 	// pImage, image_size: Pointer to PNG image data and its size
 	// width, height: output image's dimensions
 	// channels_in_file: will be 3 or 4
+	// skip_crc: Skips CRC32 checks for faster decoding/improved fuzzing.
 	// 
 	// Returns FPNG_DECODE_SUCCESS on success, otherwise one of the failure codes above.
 	// If FPNG_DECODE_NOT_FPNG is returned, you must decompress the file with a general purpose PNG decoder.
 	// If another error occurs, the file is likely corrupted or invalid, but you can still try to decompress the file with another decoder (which will likely fail).
-	int fpng_get_info(const void* pImage, uint32_t image_size, uint32_t& width, uint32_t& height, uint32_t& channels_in_file);
+	int fpng_get_info(const void* pImage, uint32_t image_size, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, const bool skip_crc);
 
 	// fpng_decode_memory() decompresses 24/32bpp PNG files ONLY encoded by this module.
 	// If the image was written by FPNG, it will decompress the image data, otherwise it will return FPNG_DECODE_NOT_FPNG in which case you should fall back to a general purpose PNG decoder (lodepng, stb_image, libpng, etc.)
@@ -106,6 +107,7 @@ namespace fpng
 	// width, height: output image's dimensions
 	// channels_in_file: will be 3 or 4
 	// desired_channels: must be 3 or 4 
+	// skip_crc: Skips CRC32 checks for faster decoding/improved fuzzing.
 	// 
 	// If the image is 24bpp and 32bpp is requested, the alpha values will be set to 0xFF. 
 	// If the image is 32bpp and 24bpp is requested, the alpha values will be discarded.
@@ -113,10 +115,10 @@ namespace fpng
 	// Returns FPNG_DECODE_SUCCESS on success, otherwise one of the failure codes above.
 	// If FPNG_DECODE_NOT_FPNG is returned, you must decompress the file with a general purpose PNG decoder.
 	// If another error occurs, the file is likely corrupted or invalid, but you can still try to decompress the file with another decoder (which will likely fail).
-	int fpng_decode_memory(const void* pImage, uint32_t image_size, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels);
+	int fpng_decode_memory(const void* pImage, uint32_t image_size, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
 
 #ifndef FPNG_NO_STDIO
-	int fpng_decode_file(const char* pFilename, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels);
+	int fpng_decode_file(const char* pFilename, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
 #endif
 
 	// ---- Internal API used for Huffman table training purposes

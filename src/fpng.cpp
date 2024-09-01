@@ -2948,7 +2948,7 @@ do_literals:
 	};
 #pragma pack(pop)
 
-	static int fpng_get_info_internal(const void* pImage, uint32_t image_size, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t &idat_ofs, uint32_t &idat_len)
+	static int fpng_get_info_internal(const void* pImage, uint32_t image_size, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t &idat_ofs, uint32_t &idat_len, const bool skip_crc)
 	{
 		static const uint8_t s_png_sig[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
 
@@ -3035,7 +3035,7 @@ do_literals:
 			const bool is_idat = strcmp(chunk_type, "IDAT") == 0;
 
 #if !FPNG_DISABLE_DECODE_CRC32_CHECKS
-			if (!is_idat)
+			if (!skip_crc && !is_idat)
 			{
 				uint32_t actual_crc32 = fpng_crc32(pImage_u8 + sizeof(uint32_t), sizeof(uint32_t) + chunk_len, FPNG_CRC32_INIT);
 				if (actual_crc32 != expected_crc32)
@@ -3097,13 +3097,13 @@ do_literals:
 		return FPNG_DECODE_SUCCESS;
 	}
 
-	int fpng_get_info(const void* pImage, uint32_t image_size, uint32_t& width, uint32_t& height, uint32_t& channels_in_file)
+	int fpng_get_info(const void* pImage, uint32_t image_size, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, const bool skip_crc)
 	{
 		uint32_t idat_ofs = 0, idat_len = 0;
-		return fpng_get_info_internal(pImage, image_size, width, height, channels_in_file, idat_ofs, idat_len);
+		return fpng_get_info_internal(pImage, image_size, width, height, channels_in_file, idat_ofs, idat_len, skip_crc);
 	}
 
-	int fpng_decode_memory(const void *pImage, uint32_t image_size, std::vector<uint8_t> &out, uint32_t& width, uint32_t& height, uint32_t &channels_in_file, uint32_t desired_channels)
+	int fpng_decode_memory(const void *pImage, uint32_t image_size, std::vector<uint8_t> &out, uint32_t& width, uint32_t& height, uint32_t &channels_in_file, uint32_t desired_channels, const bool skip_crc)
 	{
 		out.resize(0);
 		width = 0;
@@ -3117,7 +3117,7 @@ do_literals:
 		}
 
 		uint32_t idat_ofs = 0, idat_len = 0;
-		int status = fpng_get_info_internal(pImage, image_size, width, height, channels_in_file, idat_ofs, idat_len);
+		int status = fpng_get_info_internal(pImage, image_size, width, height, channels_in_file, idat_ofs, idat_len, skip_crc);
 		if (status)
 			return status;
 				
@@ -3160,7 +3160,7 @@ do_literals:
 	}
 
 #ifndef FPNG_NO_STDIO
-	int fpng_decode_file(const char* pFilename, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels)
+	int fpng_decode_file(const char* pFilename, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc)
 	{
 		FILE* pFile = nullptr;
 
@@ -3206,7 +3206,7 @@ do_literals:
 
 		fclose(pFile);
 
-		return fpng_decode_memory(buf.data(), (uint32_t)buf.size(), out, width, height, channels_in_file, desired_channels);
+		return fpng_decode_memory(buf.data(), (uint32_t)buf.size(), out, width, height, channels_in_file, desired_channels, skip_crc);
 	}
 #endif
 
