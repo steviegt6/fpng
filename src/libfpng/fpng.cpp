@@ -281,7 +281,7 @@ namespace fpng
 	}
 #endif
 
-	bool fpng_cpu_supports_sse41()
+	EXPORT bool fpng_cpu_supports_sse41()
 	{
 #if FPNG_X86_OR_X64_CPU && !FPNG_NO_SSE 
 		assert(g_cpu_info.m_initialized);
@@ -1464,7 +1464,7 @@ do_literals:
 		}
 	}
 
-	bool fpng_encode_image_to_memory(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, std::vector<uint8_t>& out_buf, uint32_t flags)
+	EXPORT bool fpng_encode_image_to_memory(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, std::vector<uint8_t>& out_buf, uint32_t flags)
 	{
 		if (!endian_check())
 		{
@@ -2908,7 +2908,7 @@ do_literals:
 		return fpng_get_info_internal(pImage, image_size, width, height, channels_in_file, idat_ofs, idat_len, skip_crc);
 	}
 
-	int fpng_decode_memory(const void *pImage, uint32_t image_size, std::vector<uint8_t> &out, uint32_t& width, uint32_t& height, uint32_t &channels_in_file, uint32_t desired_channels, const bool skip_crc)
+	EXPORT int fpng_decode_memory(const void *pImage, uint32_t image_size, std::vector<uint8_t> &out, uint32_t& width, uint32_t& height, uint32_t &channels_in_file, uint32_t desired_channels, const bool skip_crc)
 	{
 		out.resize(0);
 		width = 0;

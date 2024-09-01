@@ -26,7 +26,7 @@ namespace fpng
 
 	// Returns true if the CPU supports SSE 4.1, and SSE support wasn't disabled by setting FPNG_NO_SSE=1.
 	// fpng_init() must have been called first, or it'll assert and return false.
-	bool fpng_cpu_supports_sse41();
+	EXPORT bool fpng_cpu_supports_sse41();
 
 	inline uint32_t fpng_crc32(const void* pBuf, size_t len, uint32_t crc = FPNG_CRC32_INIT)
 	{
@@ -53,7 +53,7 @@ namespace fpng
 	// pImage: pointer to RGB or RGBA image pixels, R first in memory, B/A last.
 	// w/h - image dimensions. Image's row pitch in bytes must is w*num_chans.
 	// num_chans must be 3 or 4. 
-	bool fpng_encode_image_to_memory(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, std::vector<uint8_t>& out_buf, uint32_t flags = 0);
+	EXPORT bool fpng_encode_image_to_memory(const void* pImage, uint32_t w, uint32_t h, uint32_t num_chans, std::vector<uint8_t>& out_buf, uint32_t flags = 0);
 
 	typedef intptr_t BufListHandle;
 
@@ -121,7 +121,7 @@ namespace fpng
 	// Returns FPNG_DECODE_SUCCESS on success, otherwise one of the failure codes above.
 	// If FPNG_DECODE_NOT_FPNG is returned, you must decompress the file with a general purpose PNG decoder.
 	// If another error occurs, the file is likely corrupted or invalid, but you can still try to decompress the file with another decoder (which will likely fail).
-	int fpng_decode_memory(const void* pImage, uint32_t image_size, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
+	EXPORT int fpng_decode_memory(const void* pImage, uint32_t image_size, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
 
 #ifndef FPNG_NO_STDIO
 	int fpng_decode_file(const char* pFilename, std::vector<uint8_t>& out, uint32_t& width, uint32_t& height, uint32_t& channels_in_file, uint32_t desired_channels, const bool skip_crc);
