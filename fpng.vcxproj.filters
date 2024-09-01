@@ -50,5 +50,8 @@
     <ClInclude Include="src\basisu_miniz.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\libdeflate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

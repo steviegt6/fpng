@@ -156,6 +156,7 @@
     <ClInclude Include="src/stb_image.h" />
     <ClInclude Include="src/stb_image_write.h" />
     <ClInclude Include="src\basisu_miniz.h" />
+    <ClInclude Include="src\libdeflate.h" />
     <ClInclude Include="src\pvpngreader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
