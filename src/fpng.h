@@ -24,14 +24,6 @@ namespace fpng
 	// fpng_init() must have been called first, or it'll assert and return false.
 	bool fpng_cpu_supports_sse41();
 
-	// Fast CRC-32 SSE4.1+pclmul or a scalar fallback (slice by 4)
-	const uint32_t FPNG_CRC32_INIT = 0;
-	uint32_t fpng_crc32(const void* pData, size_t size, uint32_t prev_crc32 = FPNG_CRC32_INIT);
-
-	// Fast Adler32 SSE4.1 Adler-32 with a scalar fallback.
-	const uint32_t FPNG_ADLER32_INIT = 1;
-	uint32_t fpng_adler32(const void* pData, size_t size, uint32_t adler = FPNG_ADLER32_INIT);
-
 	// ---- Compression
 	enum
 	{
