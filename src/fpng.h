@@ -28,6 +28,16 @@ namespace fpng
 	// fpng_init() must have been called first, or it'll assert and return false.
 	bool fpng_cpu_supports_sse41();
 
+	inline uint32_t fpng_crc32(const void* pBuf, size_t len, uint32_t crc = FPNG_CRC32_INIT)
+	{
+		return libdeflate_crc32(crc, (const uint8_t*)pBuf, len);
+	}
+
+	inline uint32_t fpng_adler32(const void* pBuf, size_t len, uint32_t adler = FPNG_ADLER32_INIT)
+	{
+		return libdeflate_adler32(adler, (const uint8_t*)pBuf, len);
+	}
+
 	// ---- Compression
 	enum
 	{
